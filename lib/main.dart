@@ -4,26 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-// ДОДАНО ДЛЯ PUSH:
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'viewmodels/user_viewmodel.dart';
 import 'views/add_user_screen.dart';
 
-// ФУНКЦІЯ ДЛЯ ФОНОВИХ ПОВІДОМЛЕНЬ
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
 void main() async {
-  // ДОДАНО: Ініціалізація зв'язків Flutter та Firebase
+ 
   WidgetsFlutterBinding.ensureInitialized();
   
   if (!kIsWeb) {
-    // Для мобільних платформ ініціалізуємо Firebase
-    // Примітка: Потребує наявності файлу google-services.json у папці android/app/
+  
     try {
       await Firebase.initializeApp();
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -87,14 +84,12 @@ class _UserListScreenState extends State<UserListScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
-    _setupPushNotifications(); // ДОДАНО: Налаштування Push
+    _setupPushNotifications(); /
   }
 
-  // ФУНКЦІЯ НАЛАШТУВАННЯ PUSH
   Future<void> _setupPushNotifications() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    // Запит дозволу (особливо важливо для iOS та нових Android)
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       badge: true,
@@ -102,11 +97,10 @@ class _UserListScreenState extends State<UserListScreen> {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // Отримання токена (для надсилання повідомлення конкретному пристрою)
+     
       String? token = await messaging.getToken();
       debugPrint("Firebase Token: $token");
 
-      // Слухаємо повідомлення, коли додаток відкритий
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         if (message.notification != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -120,7 +114,7 @@ class _UserListScreenState extends State<UserListScreen> {
     }
   }
 
-  // ВЕСЬ ВАШ КОД НИЖЧЕ ЗАЛИШЕНО БЕЗ ЗМІН
+  
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
